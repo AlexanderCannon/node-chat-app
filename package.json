@@ -1,0 +1,14 @@
+{
+  "name": "node-chat-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "alexandercannon",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}

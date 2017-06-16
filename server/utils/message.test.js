@@ -16,6 +16,6 @@ describe('it should generate a location message', () => {
     var message = generateLocationMessage(mockLocation.from, mockLocation.lat, mockLocation.lng);
     expect(message.from).toBe(mockLocation.from);
     expect(message.url).toNotBe(undefined).toEqual(`${mockUrl}${mockLocation.lat},${mockLocation.lng}`)
-    // expect(message.createdAt).toNotBe(undefined).toBeA('number');
+    expect(message.createdAt).toNotBe(undefined).toBeA('number');
   });
 });

@@ -3,38 +3,45 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const { generateMessage } = require('./utils/message');
+
 const publicPath = path.join(__dirname, '..', 'public');
-var app = express();
-var server = http.createServer(app);
-var io = socketIO(server);
+
+let app = express();
+let server = http.createServer(app);
+let io = socketIO(server);
 
 let newJoinerBroadcast = {
   from: "Admin",
   text: `New user has joined`,
-  createdAt: new Date()
 }
 let newJoiner = {
   from: "Admin",
   text: `Welcome to the chatroom`,
-  createdAt: new Date()
 }
 
 io.on('connection', (socket) => {
-  socket.broadcast.emit('newMessage', newJoinerBroadcast);
-  socket.emit('newMessage', newJoiner);
+  console.log('new user connected');
+  socket.broadcast.emit('newMessage', generateMessage(newJoinerBroadcast.from, newJoinerBroadcast.text));
+
+  socket.emit('newMessage', generateMessage(newJoiner.from, newJoiner.text));
+
   socket.on('disconnect', () => {
     console.log('User disconnected');
   });
 
-  socket.on('createMessage', (message) => {
-    socket.broadcast.emit('newMessage', message);
+  socket.on('createMessage', (message, callback) => {
+    formattedMessage = generateMessage(message.from, message.text)
+    console.log('createMessage', formattedMessage);
+    io.emit('newMessage', formattedMessage);
+    callback('data from server');
   });
 });
 
 
 app.use(express.static(publicPath));
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

@@ -8,25 +8,26 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 
-let message = {
-  from: "Alexander",
-  text: "Running late, PM me",
+let newJoinerBroadcast = {
+  from: "Admin",
+  text: `New user has joined`,
+  createdAt: new Date()
+}
+let newJoiner = {
+  from: "Admin",
+  text: `Welcome to the chatroom`,
   createdAt: new Date()
 }
 
 io.on('connection', (socket) => {
-  console.log('new user connected')
+  socket.broadcast.emit('newMessage', newJoinerBroadcast);
+  socket.emit('newMessage', newJoiner);
   socket.on('disconnect', () => {
     console.log('User disconnected');
   });
-  socket.emit('newMessage', message);
 
   socket.on('createMessage', (message) => {
-    io.emit('newMessage', {
-      from: message.from,
-      text: message.text,
-      time: new Date()
-    })
+    socket.broadcast.emit('newMessage', message);
   });
 });
 

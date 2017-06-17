@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat App</title>
+</head>
+
+<body class="chat">
+  <div class="chat__sidebar">
+    <h3>Currently Active</h3>
+    <div id="users"></div>
+  </div>
+  <div class="chat__main">
+    <ol id="messages" class="chat__messages"></ol>
+
+    <div class="chat__footer">
+      <form id="message-form">
+        <input name="message" type="text" placeholder="Type a message..." autocomplete="off" autofocus/>
+        <button>Send</button>
+      </form>
+      <button id="send-location">Send location</button>
+    </div>
+  </div>
+
+  <script id="message-template" type="text/template">
+    <li class="message">
+      <div class="message__title">
+        <h4>{{message.from}}</h4>
+        <span>{{message.formattedTime}}</span>
+      </div>
+      <div class="message__body">
+        <p>{{message.text}}</p>
+      </div>
+    </li>
+  </script>
+  <script id="location-message-template" type="text/template">
+    <li class="message">
+      <div class="message__title">
+        <h4>{{message.from}}</h4>
+        <span>{{message.formattedTime}}</span>
+      </div>
+      <div class="message__body">
+        <p>
+          <a href="{{message.url}}" target="_blank">
+            My location
+          </a>
+        </p>
+      </div>
+    </li>
+  </script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+  <script>
+    if (!window.moment) {
+      document.write('<script src="js/libs/moment.min.js"><\/script>');
+    }
+    if (!window.Mustache) {
+      document.write('<script src="js/libs/mustache.min.js"><\/script>');
+    }
+  </script>
+  <script src="/js/chat.js"></script>
+</body>
+
+</html>

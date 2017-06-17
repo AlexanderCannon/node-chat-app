@@ -1,4 +1,20 @@
+function scrollToBottom() {
+  //Selectors
+  var messages = jQuery('#messages');
+  var newMessage = messages.children('li:last-child');
+  //Heights
+  var clientHeight = messages.prop('clientHeight'),
+    scrollTop = messages.prop('scrollTop'),
+    scrollHeight = messages.prop('scrollHeight'),
+    newMessageHeight = newMessage.innerHeight(),
+    lastMessageHeight = newMessage.prev().innerHeight();
+  if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+    messages.scrollTop(scrollHeight);
+  }
+}
+
 var socket = io();
+
 socket.on('connect', function () {
   console.log('Connected to server');
 });
@@ -12,6 +28,7 @@ socket.on('newMessage', function (message) {
   var template = jQuery('#message-template').html();
   var html = Mustache.render(template, { message });
   jQuery('#messages').append(html);
+  scrollToBottom();
 });
 
 socket.on('newLocationMessage', function (message) {
@@ -19,6 +36,7 @@ socket.on('newLocationMessage', function (message) {
   var template = jQuery('#location-message-template').html();
   var html = Mustache.render(template, { message });
   jQuery('#messages').append(html);
+  scrollToBottom();
 });
 
 var chatbar = jQuery('[name=message]');

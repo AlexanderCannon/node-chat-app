@@ -8,18 +8,17 @@ socket.on('disconnect', function () {
 });
 
 socket.on('newMessage', function (message) {
-  var li = jQuery('<li></li>');
-  li.text(`${message.from}: ${message.text}`);
-  jQuery('#messages').append(li);
+  message.formattedTime = moment(message.createdAt).format('HH:mm');
+  var template = jQuery('#message-template').html();
+  var html = Mustache.render(template, { message });
+  jQuery('#messages').append(html);
 });
 
 socket.on('newLocationMessage', function (message) {
-  var li = jQuery('<li></li>');
-  var a = jQuery('<a target="_blank">My Location</a>');
-  a.attr('href', message.url)
-  li.text(`${message.from}: `);
-  jQuery('#messages').append(li);
-  li.append(a);
+  message.formattedTime = moment(message.createdAt).format('HH:mm');
+  var template = jQuery('#location-message-template').html();
+  var html = Mustache.render(template, { message });
+  jQuery('#messages').append(html);
 });
 
 var chatbar = jQuery('[name=message]');

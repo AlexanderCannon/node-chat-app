@@ -1,13 +1,14 @@
+const moment = require('moment');
 const googleUrl = 'https://www.google.com/maps/?q='
 
 var generateMessage = (from, text) => {
-  createdAt = new Date().getTime();
+  createdAt = moment().valueOf();
   return { from, text, createdAt }
 }
 var generateLocationMessage = (from, lat, lng) => {
   let url = `${googleUrl}${lat},${lng}`,
-    createdAt = new Date().getTime();
-    console.log(url)
+    createdAt = moment().valueOf();
+  console.log(url)
   return { from, url, createdAt }
 }
 

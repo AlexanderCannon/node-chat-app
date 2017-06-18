@@ -8,7 +8,6 @@ var generateMessage = (from, text) => {
 var generateLocationMessage = (from, lat, lng) => {
   let url = `${googleUrl}${lat},${lng}`,
     createdAt = moment().valueOf();
-  console.log(url)
   return { from, url, createdAt }
 }
 

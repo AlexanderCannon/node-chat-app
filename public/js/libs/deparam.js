@@ -1,6 +1,6 @@
 (function($){
   $.deparam = $.deparam || function(uri){
-    if(uri === undefined){
+    if(uri == undefined){
       uri = window.location.search;
     }
     var queryString = {};

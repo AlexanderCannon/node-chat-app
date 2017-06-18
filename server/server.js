@@ -28,7 +28,6 @@ io.on('connection', (socket) => {
       return callback('Name and room name are required.');
     }
     socket.join(params.room);
-
     socket.emit('newMessage', generateMessage(newJoiner.from, newJoiner.text));
     socket.broadcast.to(params.room).emit('newMessage', generateMessage(newJoinerBroadcast.from, `${params.name} ${newJoinerBroadcast.text}`));
     callback();

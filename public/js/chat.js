@@ -16,6 +16,8 @@ function scrollToBottom() {
 var socket = io();
 
 socket.on('connect', function () {
+  var params = jQuery.deparam(window.location.search);
+  socket.emit('join', params, checkValues)
   console.log('Connected to server');
 });
 
@@ -68,3 +70,12 @@ locationButton.on('click', function (e) {
     alert('Please allow the browser to access your location.');
   });
 });
+
+function checkValues(err) {
+  if(err) {
+    alert(err);
+    window.location.href = '/';
+  } else {
+    console.log('no err')
+  }
+}

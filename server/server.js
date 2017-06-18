@@ -4,7 +4,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const { generateMessage, generateLocationMessage } = require('./utils/message');
-
+const { isRealString } = require('./utils/validator');
 const publicPath = path.join(__dirname, '..', 'public');
 
 let app = express();
@@ -13,7 +13,7 @@ let io = socketIO(server);
 
 let newJoinerBroadcast = {
   from: "Admin",
-  text: `New user has joined`,
+  text: 'has joined the room',
 }
 let newJoiner = {
   from: "Admin",
@@ -21,10 +21,18 @@ let newJoiner = {
 }
 
 io.on('connection', (socket) => {
-  console.log('new user connected');
-  socket.broadcast.emit('newMessage', generateMessage(newJoinerBroadcast.from, newJoinerBroadcast.text));
 
-  socket.emit('newMessage', generateMessage(newJoiner.from, newJoiner.text));
+
+  socket.on('join', (params, callback) => {
+    if (!isRealString(params.name) || !isRealString(params.room)) {
+      return callback('Name and room name are required.');
+    }
+    socket.join(params.room);
+
+    socket.emit('newMessage', generateMessage(newJoiner.from, newJoiner.text));
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage(newJoinerBroadcast.from, `${params.name} ${newJoinerBroadcast.text}`));
+    callback();
+  });
 
   socket.on('disconnect', () => {
     console.log('User disconnected');

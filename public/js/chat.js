@@ -55,12 +55,10 @@ var locationButton = jQuery('#send-location');
 
 jQuery('#message-form').on('submit', function (e) {
   e.preventDefault();
-  socket.emit('createMessage', {
-    from: 'User',
-    text: chatbar.val()
-  }, function () {
-    chatbar.val('');
-  });
+  socket.emit('createMessage', chatbar.val()
+    , function () {
+      chatbar.val('');
+    });
 });
 
 locationButton.on('click', function (e) {

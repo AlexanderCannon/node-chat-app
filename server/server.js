@@ -5,36 +5,40 @@ const socketIO = require('socket.io');
 
 const { generateMessage, generateLocationMessage } = require('./utils/message');
 const { isRealString } = require('./utils/validator');
+const { Room } = require('./classes/room');
 const publicPath = path.join(__dirname, '..', 'public');
 
 let app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
 
-let newJoinerBroadcast = {
-  from: "Admin",
-  text: 'has joined the room',
-}
-let newJoiner = {
-  from: "Admin",
-  text: `Welcome to the chatroom`,
-}
+var room = new Room();
+const admin = "Admin"
+const newJoinerBroadcast = 'has joined the room.';
+const newJoinerMessage = 'Welcome to the chatroom.';
+const userLeave = 'has left the chatroom.';
 
 io.on('connection', (socket) => {
-
 
   socket.on('join', (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
       return callback('Name and room name are required.');
     }
+    room.removeUser(socket.id);
+    room.addUser(socket.id, params.name, params.room);
     socket.join(params.room);
-    socket.emit('newMessage', generateMessage(newJoiner.from, newJoiner.text));
-    socket.broadcast.to(params.room).emit('newMessage', generateMessage(newJoinerBroadcast.from, `${params.name} ${newJoinerBroadcast.text}`));
+    io.to(params.room).emit('updateUserList', room.getUsers(params.room));
+    socket.emit('newMessage', generateMessage(admin, newJoinerMessage));
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage(admin, `${params.name} ${newJoinerBroadcast}`));
     callback();
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    var user = room.removeUser(socket.id);
+    if (user) {
+      io.to(user.room).emit('updateUserList', room.getUsers(user.room))
+      io.to(user.room).emit('newMessage', generateMessage(admin, `${user.name} ${userLeave}`))
+    }
   });
 
   socket.on('createMessage', (message, callback) => {

@@ -27,7 +27,7 @@ describe('Room', () => {
     expect(userList).toEqual(['User 2']);
   });
   it('should remove a user', () => {
-    var userId = 1;
+    var userId = 2;
     var resUser = room.removeUser(userId);
     expect(resUser.id).toEqual(userId);
     expect(room.users.length).toBe(2);
